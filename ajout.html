@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ajout</title>
+<script type="text/javascript">
+    function GenererCaptcha() {
+        ch = ""
+        for (let i = 0; i < 10; i++) {
+            k = Math.floor(Math.random() * 26)+1; 
+            if (k%2 == 0  && (i+1)%2==1) {
+                ch += String.fromCharCode(k+96)
+            }else if (k%2 == 1 && (i+1)%2==1) {
+                ch += String.fromCharCode(k+64)
+            }else if ((i+1)%2==0) {
+                ch +=k%10
+            }
+            
+        }
+        document.getElementById('captcha').innerHTML = ch
+    }
+    function verif() {
+        nom = document.getElementById('nom').value.trim();
+        prenom = document.getElementById('prenom').value.trim();
+        login = document.getElementById('login').value.trim();
+        mdp = document.getElementById('mdp').value;
+        imei = document.getElementById('imei').value;
+        sim = document.getElementById('sim').value;
+        vehicules = document.getElementsByName('vehicule');
+        compteur = document.getElementById('compteur').value;
+        abonnements = document.getElementsByName('abonnement');
+        captcha = document.getElementById('captcha').innerHTML;
+        reponse = document.getElementById('reponse').value;
+        if (nom.length<4 || !nom.match(/^[A-Za-z]+$/)) {
+            alert('votre nom devez contenir au moins 4 charactere')
+            return
+        }
+        if (prenom.length<4 || !prenom.match(/^[A-Za-z]+$/)) {
+            alert('votre prenom devez contenir au moins 4 charactere')
+            return
+        }
+        if (login.length<6 || !login.match(/^[A-Za-z0-9]+$/)) {
+            alert('votre login devez contenir au moins 6 charactere et chiffre')
+            return
+        }
+        if (mdp.length<8 || !mdp.match(/^[A-Za-z]+$/)) {
+            alert('votre mot de passe devez contenir au moins 8 charactere')
+            return
+        }
+        if (imei.length != 15 || !imei.match(/^[0-9]+$/)) {
+            alert('votre IMEI devez contenir 15 entiers')
+            return
+        }
+        if (sim.length != 11 || !sim.match(/^[0-9]+$/)) {
+            alert('votre SIM devez contenir 11 entiers')
+            return
+        }
+        ok = false
+        vehicules.forEach(vehicule => {
+            if (vehicule.checked) {
+                ok = true
+            }
+        });
+        if (!ok) {
+            alert('vous devez selectionner une vehicule')
+            return
+        }
+        if (isNaN(compteur) || Number(compteur)<0) {
+            alert('votre compteur devez contenir un nombre positif')
+            return
+        }
+        ok = false
+        abonnements.forEach(abonnement => {
+            if (abonnement.checked) {
+                ok = true
+            }
+        });
+        if (!ok) {
+            alert('vous devez selectionner une abonnement')
+            return
+        }
+        rep = ""
+        for (let i = 0; i < captcha.length; i++) {
+            const lettre = captcha[i];
+            if (!isNaN(lettre)) {
+                rep += lettre
+            }
+        }
+        if (!(rep == reponse)) {
+            alert('votre reponse de captcha est incorrecte')
+            return
+        }
+        
+    }
+        
+</script>
+<style type="text/css">
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #captcha {
+      color: red;
+    }
+    label {
+      font-size: 20px;
+    }
+</style>
+</head>
+<body onload="GenererCaptcha()">
+    <form  onsubmit="return false"  style="display: inline-flex;flex-direction: column;">
+        <h1>Ajouter un abonné</h1>
+
+        <label for="nom"><b>Nom</b></label>
+        <input type="text" name="nom" id="nom">
+
+        <label for="prenom"><b>prenom</b></label>
+        <input type="text" name="prenom" id="prenom">
+
+        <label for="login"><b>login</b></label>
+        <input type="text" name="login" id="login">
+
+        <label for="mdp"><b>Mot de passe</b></label>
+        <input type="password" name="mdp" id="mdp">
+
+        <label for="imei"><b>N°imei</b></label>
+        <input type="text" name="imei" id="imei">
+
+        <label for="sim"><b>N°carte sim</b></label>
+        <input type="text" name="sim" id="sim">
+        
+        <div>
+            <label ><b>type vehicule</b></label>
+            <label ><input type="radio" name="vehicule" id="voiture">Voiture</label>
+            <label ><input type="radio" name="vehicule" id="camion">camion</label>
+            <label ><input type="radio" name="vehicule" id="moto">moto</label>
+        </div>
+        
+        <label for="compteur"><b>compteur</b></label>
+        <input type="text" name="compteur" id="compteur">
+        
+        <div>
+            <label ><b>Duree d'abonnement</b></label>
+            <label ><input type="radio" name="abonnement" id="3">3 mois</label>
+            <label ><input type="radio" name="abonnement" id="6">6 mois </label>
+            <label ><input type="radio" name="abonnement" id="12">1 ans</label>
+        </div>
+        <label><b>captcha</b> <span id="captcha"></span><button onclick="GenererCaptcha()" >Actualiser</button></label>
+        <label><b>Reponse</b> <input type="text" name="reponse" id="reponse"></label>
+        <div>
+            <button type="submit" onclick="verif()">Ajouter</button>      
+            <button type="reset">Annuler</button>
+        </div>
+        </form>
+</body>
+</html>
